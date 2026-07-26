@@ -1,21 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>AR Camera Test</title>
+<title>Navigate CSUL AR</title>
 
 <style>
 
-body{
+*{
     margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
     overflow:hidden;
-    background:black;
+    background:#000;
+    font-family:Arial, sans-serif;
 }
 
 video{
+    position:fixed;
+    top:0;
+    left:0;
     width:100vw;
     height:100vh;
     object-fit:cover;
@@ -25,12 +34,13 @@ video{
     position:absolute;
     top:20px;
     left:20px;
-    background:rgba(0,0,0,.6);
-    color:white;
-    padding:15px;
-    border-radius:10px;
+    background:rgba(0,0,0,.65);
+    color:#fff;
+    padding:15px 20px;
+    border-radius:12px;
+    font-size:18px;
+    line-height:1.8;
     z-index:10;
-    font-family:Arial;
 }
 
 </style>
@@ -39,51 +49,49 @@ video{
 
 <body>
 
-
-
 <video id="camera" autoplay playsinline></video>
 
+<div id="info">
+
+<b>🎯 Destination</b><br>
+<span id="destination">CICS Building</span>
+
+<br><br>
+
+<b>📏 Distance</b><br>
+<span id="distance">120</span> meters
+
+</div>
 
 <script>
 
 const video = document.getElementById("camera");
 
+async function startCamera(){
 
-navigator.mediaDevices.getUserMedia({
+    try{
 
-    video:{
-        facingMode:{
-            ideal:"environment"
-        }
-    },
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video:{
+                facingMode:"environment"
+            },
+            audio:false
+        });
 
-    audio:false
+        video.srcObject = stream;
 
-})
+    }catch(error){
 
-.then(stream=>{
+        alert("Unable to access camera.");
+        console.error(error);
 
-    video.srcObject = stream;
+    }
 
-    
-   
+}
 
-    console.log("Camera started");
-
-})
-
-.catch(error=>{
-
-    document.getElementById("info").innerHTML =
-    "❌ Camera Error: " + error;
-
-    console.log(error);
-
-});
-
+startCamera();
 
 </script>
-
 
 </body>
 </html>
