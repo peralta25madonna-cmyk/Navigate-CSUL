@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Destination</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(130deg, #a9f99e, #46add5);
+    padding:20px;
+    color:white;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+}
+
+/* HEADER */
+h1{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    opacity:.9;
+    margin-bottom:20px;
+}
+
+/* SEARCH */
+.search-box{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    margin-bottom:15px;
+}
+
+/* CATEGORY BUTTONS */
+.categories{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:20px;
+    justify-content:center;
+}
+
+.cat{
+    background:rgba(255,255,255,.15);
+    padding:8px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:.3s;
+    font-size:13px;
+}
+
+.cat:hover{
+    background:rgba(255,255,255,.3);
+}
+
+/* RESULTS */
+.result{
+    background:rgba(255,255,255,.15);
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:10px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.result:hover{
+    background:rgba(255,255,255,.25);
+}
+
+.hidden{
+    display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🔍 Find Destination</h1>
+    <p class="subtitle">Search or browse campus locations</p>
+
+    <!-- SEARCH -->
+    <input 
+        type="text" 
+        id="searchInput"
+        class="search-box"
+        placeholder="Search building, office, classroom..."
+        onkeyup="searchPlace()">
+
+    <!-- CATEGORIES -->
+    <div class="categories">
+        <div class="cat" onclick="filterCategory('all')">All</div>
+        <div class="cat" onclick="filterCategory('Academic')">Academic</div>
+        <div class="cat" onclick="filterCategory('Administrative')">Administrative</div>
+        <div class="cat" onclick="filterCategory('Facility')">Facility</div>
+        <div class="cat" onclick="filterCategory('Food')">Food</div>
+        <div class="cat" onclick="filterCategory('Health')">Health</div>
+        <div class="cat" onclick="filterCategory('Housing')">Housing</div>
+        <div class="cat" onclick="filterCategory('Laboratory')">Laboratory</div>
+        <div class="cat" onclick="filterCategory('Library')">Library</div>
+        <div class="cat" onclick="filterCategory('Office')">Office</div>
+        <div class="cat" onclick="filterCategory('Parking')">Parking</div>
+        <div class="cat" onclick="filterCategory('Picnic')">Picnic</div>
+        <div class="cat" onclick="filterCategory('Sports')">Sports</div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="results"></div>
+
+</div>
+
+<script>
+
+const destinations = [
+
+{ name:"Administration Building", category:"Buildings" },
+{ name:"CICS Building", category:"Buildings" },
+{ name:"CTE Building", category:"Buildings" },
+{ name:"Library", category:"Buildings" },
+
+{ name:"Registrar", category:"Offices" },
+{ name:"Cashier", category:"Offices" },
+{ name:"Guidance Office", category:"Offices" },
+{ name:"Dean's Office", category:"Offices" },
+
+{ name:"Room 101", category:"Classrooms" },
+{ name:"Room 102", category:"Classrooms" },
+{ name:"Lab 1", category:"Classrooms" },
+{ name:"Lab 2", category:"Classrooms" },
+
+{ name:"Canteen", category:"Facilities" },
+{ name:"Clinic", category:"Facilities" },
+{ name:"Restrooms", category:"Facilities" },
+{ name:"Gymnasium", category:"Facilities" }
+
+];
+
+let currentFilter = "all";
+
+/* LOAD ALL INITIALLY */
+window.onload = () => {
+    renderList(destinations);
+};
+
+/* SEARCH FUNCTION */
+function searchPlace(){
+
+    let input = document.getElementById("searchInput").value.toLowerCase();
+
+    let filtered = destinations.filter(item =>
+        item.name.toLowerCase().includes(input) &&
+        (currentFilter === "all" || item.category === currentFilter)
+    );
+
+    renderList(filtered);
+}
+
+/* CATEGORY FILTER */
+function filterCategory(cat){
+    currentFilter = cat;
+    searchPlace();
+}
+
+/* RENDER LIST */
+function renderList(list){
+
+    let results = document.getElementById("results");
+    results.innerHTML = "";
+
+    list.forEach(item => {
+
+        results.innerHTML += `
+            <div class="result" onclick="selectPlace('${item.name}')">
+                📍 ${item.name}
+            </div>
+        `;
+
+    });
+}
+
+/* SELECT DESTINATION */
+function selectPlace(name){
+
+    localStorage.setItem("selectedDestination", name);
+
+    window.location.href = "http://localhost:58000/";
+
+}
+
+
+
+</script>
+
+</body>
+</html>

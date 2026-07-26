@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Scanner</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#004d26;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    padding:20px;
+}
+
+h1{
+    margin-bottom:10px;
+}
+
+/* CAMERA BOX */
+.scanner{
+    position:relative;
+    width:100%;
+    max-width:380px;
+}
+
+/* THIS IS THE LIVE CAMERA */
+#reader{
+    width:100%;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+/* OVERLAY FRAME */
+.frame{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    border:3px solid #00ff88;
+    border-radius:20px;
+    pointer-events:none;
+}
+
+/* CORNERS (real scanner feel) */
+.corner{
+    position:absolute;
+    width:30px;
+    height:30px;
+    border:3px solid #00ff88;
+}
+
+.top-left{
+    top:10px;
+    left:10px;
+    border-right:none;
+    border-bottom:none;
+}
+
+.top-right{
+    top:10px;
+    right:10px;
+    border-left:none;
+    border-bottom:none;
+}
+
+.bottom-left{
+    bottom:10px;
+    left:10px;
+    border-right:none;
+    border-top:none;
+}
+
+.bottom-right{
+    bottom:10px;
+    right:10px;
+    border-left:none;
+    border-top:none;
+}
+
+/* STATUS */
+.status{
+    margin-top:15px;
+    font-size:14px;
+    opacity:.9;
+    text-align:center;
+}
+
+/* RESULT */
+.result{
+    display:none;
+    margin-top:20px;
+    background:rgba(255,255,255,.12);
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+    width:100%;
+    max-width:380px;
+}
+
+button{
+    margin-top:10px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#00ff88;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📷 Scan QR Code</h1>
+
+<div class="scanner">
+
+    <!-- LIVE CAMERA FEED -->
+    <div id="reader"></div>
+
+    <!-- FRAME OVERLAY -->
+    <div class="frame">
+        <div class="corner top-left"></div>
+        <div class="corner top-right"></div>
+        <div class="corner bottom-left"></div>
+        <div class="corner bottom-right"></div>
+    </div>
+
+</div>
+
+<p class="status" id="status">Point camera to QR code</p>
+
+<div class="result" id="resultBox">
+    <h3>QR Detected 📍</h3>
+    <p id="resultText"></p>
+
+    <button onclick="goNext()">View Info</button>
+</div>
+
+<script>
+
+let scanned = "";
+
+/* START SCANNER */
+function startScanner(){
+
+    const scanner = new Html5QrcodeScanner(
+        "reader",
+        { fps: 10, qrbox: 250 }
+    );
+
+    scanner.render((decodedText) => {
+
+        scanned = decodedText.trim().toLowerCase();
+
+        document.getElementById("status").innerText =
+            "QR Code detected ✔";
+
+        document.getElementById("resultBox").style.display = "block";
+        document.getElementById("resultText").innerText = scanned;
+
+        scanner.clear();
+
+    });
+
+}
+
+/* NAVIGATE */
+function goNext(){
+    window.location.href = "qr-info.html?place=" + scanned;
+}
+
+startScanner();
+
+</script>
+
+</body>
+</html>

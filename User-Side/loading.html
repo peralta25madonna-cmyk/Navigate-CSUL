@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Navigate CSUL</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:linear-gradient(130deg, #a9f99e, #46add5);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    color:white;
+}
+
+/* BILOG NA CONTAINER NG LOGO */
+.logo-container{
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    overflow:hidden;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
+    margin-bottom:20px;
+}
+
+/* PICTURE SA LOOB NG BILOG */
+.logo{
+    width:140%;   /* Palakihin ang picture */
+    height:140%;
+    object-fit:contain;
+}
+
+h1{
+    margin-bottom:25px;
+    font-size:2rem;
+}
+
+/* Aesthetic pabilog na loader */
+.loader{
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    border:6px solid rgba(255,255,255,.25);
+    border-top:6px solid #00c853;   /* green */
+    border-right:6px solid #00b0ff; /* blue */
+    animation:spin 1s linear infinite;
+    box-shadow:0 0 15px rgba(0,176,255,.4),
+               0 0 15px rgba(0,200,83,.4);
+}
+
+@keyframes spin{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
+}
+
+p{
+    margin-top:15px;
+    font-size:15px;
+    opacity:.9;
+}
+</style>
+</head>
+
+<body>
+
+<!-- BILOG NA LOGO -->
+<div class="logo-container">
+    <img src="logo.png" class="logo" alt="CSUL Logo">
+</div>
+
+<h1>Navigate CSUL</h1>
+
+<div class="loader"></div>
+
+<p>Loading Campus Navigation...</p>
+
+<script>
+setTimeout(() => {
+    window.location.href = "user-type.html";
+}, 2000);
+</script>
+
+</body>
+</html>

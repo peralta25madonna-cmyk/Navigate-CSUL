@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Scanner</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+   background:linear-gradient(130deg, #a9f99e, #46add5);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.scanner-card{
+    width:100%;
+    max-width:420px;
+    background:#fff;
+    border-radius:28px;
+    padding:25px 20px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+h1{
+    color:#006633;
+    margin-bottom:8px;
+    font-size:32px;
+}
+
+.subtitle{
+    color:#555;
+    margin-bottom:20px;
+    font-size:15px;
+}
+
+#reader{
+    width:100%;
+    overflow:hidden;      /* ito ang pumipigil sa paglabas ng camera */
+    border-radius:22px;
+    background:#f5f5f5;
+    padding:8px;
+}
+
+/* ayusin ang video para hindi lumagpas */
+#reader video{
+    width:100% !important;
+    height:auto !important;
+    border-radius:18px;
+    object-fit:cover;
+}
+
+#result{
+    margin-top:18px;
+    padding:14px;
+    border-radius:14px;
+    background:#f7f7f7;
+    color:#006633;
+    font-weight:bold;
+    font-size:16px;
+}
+
+.tip{
+    margin-top:15px;
+    color:#666;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="scanner-card">
+    <h1>Scan QR Code</h1>
+    <p class="subtitle">Position the QR code inside the frame</p>
+
+    <div id="reader"></div>
+
+    <p id="result">Waiting for QR Code...</p>
+    <p class="tip">Tip: Hold your device steady for better scanning.</p>
+</div>
+
+<script>
+let html5QrCode = new Html5Qrcode("reader");
+
+function onScanSuccess(scannedText){
+    html5QrCode.stop();
+
+    document.getElementById("result").innerHTML =
+        "QR Successfully Scanned<br>Loading information...";
+
+    // Check kung room QR o building QR
+    if(scannedText.includes("/room")){
+        localStorage.setItem("room", scannedText);
+
+        setTimeout(function(){
+            window.location.href = "room.html";
+        }, 1000);
+
+    } else {
+        localStorage.setItem("building", scannedText);
+
+        setTimeout(function(){
+            window.location.href = "info.html";
+        }, 1000);
+    }
+}
+
+function startScanner() {
+
+    html5QrCode.start(
+        {
+            facingMode: "environment"
+        },
+        {
+            fps: 15,
+            qrbox: {
+                width: 250,
+                height: 250
+            }
+        },
+        onScanSuccess
+    ).catch(err => {
+        alert("Camera Error: " + err);
+    });
+
+}
+   
+
+window.onload = function(){
+    startScanner();
+};
+</script>
+
+
+
+</body>
+</html>

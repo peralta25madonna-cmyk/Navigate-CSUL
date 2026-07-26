@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Navigate CSUL</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(130deg, #a9f99e, #46add5);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:600px;
+}
+
+/* HEADER */
+.header{
+    text-align:center;
+    color:white;
+    margin-bottom:25px;
+}
+
+/* LOGO + TITLE SA TABI */
+.header-title{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    margin-bottom:8px;
+}
+
+.header-logo{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,.2);
+}
+
+.header-logo img{
+    width:125%;
+    height:125%;
+    object-fit:contain;
+}
+
+.header-title h1{
+    font-size:2rem;
+    margin:0;
+}
+
+.header p{
+    opacity:.9;
+}
+
+/* MENU GRID */
+.menu-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+}
+
+.menu-card{
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(12px);
+    border-radius:20px;
+    padding:25px 15px;
+    color:white;
+    cursor:pointer;
+    transition:.3s;
+    border:1px solid rgba(255,255,255,.2);
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+
+    min-height:180px;
+}
+
+.menu-card:hover{
+    transform:translateY(-5px) scale(1.03);
+    background:rgba(255,255,255,.25);
+}
+
+.icon{
+    width:60px;
+    height:60px;
+    background:linear-gradient(135deg,#0f9d58,#0b7d46);
+    border-radius:18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:28px;
+    color:#fff;
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+    transition:.3s;
+    margin-bottom:15px;
+}
+
+.menu-card:hover .icon{
+    transform:scale(1.1) rotate(-5deg);
+}
+
+.text h3{
+    font-size:18px;
+    margin-bottom:8px;
+}
+
+.text p{
+    font-size:13px;
+    opacity:.9;
+    line-height:1.4;
+}
+
+@media(max-width:600px){
+    .menu-grid{
+        grid-template-columns:1fr;
+    }
+
+    .header-title h1{
+        font-size:1.7rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER NA MAY LOGO SA TABI NG TITLE -->
+    <div class="header">
+        <div class="header-title">
+            <div class="header-logo">
+                <img src="logo.png" alt="Navigate CSUL Logo">
+            </div>
+            <h1>Navigate CSUL</h1>
+        </div>
+        <p>What would you like to do today?</p>
+    </div>
+
+    <div class="menu-grid">
+
+        <div class="menu-card" onclick="findDestination()">
+            <div class="icon">
+                <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <div class="text">
+                <h3>Find Destination</h3>
+                <p>Search campus buildings and rooms</p>
+            </div>
+        </div>
+
+        <div class="menu-card" onclick="openMap()">
+            <div class="icon">
+                <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            <div class="text">
+                <h3>Interactive Map</h3>
+                <p>View the CSU Lal-lo campus map</p>
+            </div>
+        </div>
+
+        <div class="menu-card" onclick="scanQR()">
+            <div class="icon">
+                <i class="fa-solid fa-qrcode"></i>
+            </div>
+            <div class="text">
+                <h3>Scan QR Code</h3>
+                <p>Explore CSU Lal-lo in AR view</p>
+            </div>
+        </div>
+
+        <div class="menu-card" onclick="recommendedPlaces()">
+            <div class="icon">
+                <i class="fa-solid fa-map-pin"></i>
+            </div>
+            <div class="text">
+                <h3>Recommended Places</h3>
+                <p>Discover popular destinations on campus</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function findDestination(){
+    window.location.href = "search.html";
+}
+
+function openMap(){
+    window.location.href = "map.html";
+}
+
+function scanQR(){
+    window.location.href = "scanQR.html";
+}
+function recommendedPlaces(){
+    window.location.href = "recommended.html";
+}
+</script>
+
+</body>
+</html>

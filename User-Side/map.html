@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Map - CSUL</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(130deg, #a9f99e, #46add5);
+    padding:20px;
+    color:white;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+/* HEADER */
+h1{
+    text-align:center;
+    margin-bottom:5px;
+}
+
+.subtitle{
+    text-align:center;
+    opacity:.9;
+    margin-bottom:20px;
+}
+
+/* MAP CONTAINER */
+.map-container{
+    position:relative;
+    width:100%;
+    border-radius:20px;
+    overflow:hidden;
+    border:2px solid rgba(255,255,255,.2);
+}
+
+/* MAP IMAGE */
+.map-container img{
+    width:100%;
+    display:block;
+}
+
+/* MARKERS */
+.marker{
+    position:absolute;
+    transform:translate(-50%, -50%);
+    cursor:pointer;
+}
+
+.dot{
+    width:12px;
+    height:12px;
+    background:red;
+    border-radius:50%;
+    border:2px solid white;
+    box-shadow:0 0 10px rgba(0,0,0,.5);
+    animation:pulse 1.5s infinite;
+}
+
+.label{
+    display:none;
+    position:absolute;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
+    white-space:nowrap;
+    font-size:11px;
+    background:rgba(0,0,0,.8);
+    color:#fff;
+    padding:5px 10px;
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+
+@keyframes pulse{
+    0%{ transform:scale(1); }
+    50%{ transform:scale(1.3); }
+    100%{ transform:scale(1); }
+}
+
+/* LEGEND */
+.legend{
+    margin-top:20px;
+    background:rgba(255,255,255,.12);
+    padding:15px;
+    border-radius:15px;
+}
+
+.legend h3{
+    margin-bottom:10px;
+}
+
+.legend-item{
+    padding:5px 0;
+    font-size:14px;
+    cursor:pointer;
+}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+    .label{
+        font-size:10px;
+    }
+}
+
+.popup{
+    display:none;
+    position:absolute;
+    background:white;
+    color:black;
+    padding:15px;
+    border-radius:12px;
+    box-shadow:0 0 20px rgba(0,0,0,.3);
+    z-index:999;
+    min-width:170px;
+
+}
+
+.popup button{
+
+    margin-top:5px;
+    width:100%;
+    padding:5px;
+    border:none;
+    background:#006633;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+
+}
+
+    .dot{
+    width:14px;
+    height:14px;
+    background:red;
+    border-radius:50%;
+    border:2px solid white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-size:8px;
+    font-weight:bold;
+    box-shadow:0 0 10px rgba(0,0,0,.5);
+    animation:pulse 1.5s infinite;
+}
+
+.search-container{
+    width:100%;
+    margin:20px 0;
+    position:relative;
+}
+
+.search-container input{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    outline:none;
+}
+
+.search-results{
+    display:none;
+    position:absolute;
+    width:100%;
+    background:white;
+    color:black;
+    border-radius:10px;
+    margin-top:5px;
+    max-height:200px;
+    overflow-y:auto;
+    z-index:999;
+}
+
+.search-results div{
+    padding:10px;
+    cursor:pointer;
+}
+
+.search-results div:hover{
+    background:#f2f2f2;
+}
+
+.dot.active{
+    background:#28a745;
+    transform:scale(1.5);
+}
+
+.popup{
+    display:none;
+    position:absolute;
+    background:white;
+    color:black;
+    padding:15px;
+    border-radius:12px;
+    box-shadow:0 0 20px rgba(0,0,0,.3);
+    z-index:999;
+    min-width:170px;
+}
+
+.close-btn{
+    position:absolute;
+    top:3px;
+    right:6px;
+    font-size:13px;
+    font-weight:bold;
+    cursor:pointer;
+    color:#555;
+}
+
+.close-btn:hover{
+    color:red;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🗺️ Interactive Campus Map</h1>
+    <p class="subtitle">Tap a location to navigate</p>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <div class="search-container">
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="🔍 Search destination..."
+        onkeyup="searchLocation()">
+
+    <div id="searchResults" class="search-results"></div>
+
+</div>
+
+
+    <!-- MAP -->
+    <div class="map-container">
+
+        <!-- CSU CAMPUS MAP -->
+        <img src="csumap.jpeg" alt="CSUL Map">
+
+
+        <!-- 1 CTED BUILDING -->
+        <div class="marker" data-name="College of Teacher Education (CTED) Building"
+        
+            style="top:20%; left:64%;">
+        <div class="dot"
+            onclick="showPopup(this,'College of Teacher Education (CTED) Building')"> 1 </div>
+        </div>
+
+        <!-- 2 CTED STUDENT COUNCIL -->
+        <div class="marker" data-name="College of Teacher Education (CTED) Student Council"
+            style="top:20%; left:62%;">
+        <div class="dot"
+            onclick="showPopup(this,'College of Teacher Education Student (CTED) Council')"> 2 </div>
+        </div>
+
+        <!-- 3 CTED SHED -->
+        <div class="marker" data-name="College of Teacher Education (CTED) Shed"
+            style="top:21%; left:61%;">
+        <div class="dot"
+            onclick="showPopup(this,'College of Teacher Education (CTED) Shed')"> 3 </div>
+        </div>
+
+        <!-- 4 CTED SHED -->
+         <div class="marker" data-name="College of Teacher Education Shed"
+            style="top:22.2%; left:63.1%;">
+        <div class="dot"
+            onclick="showPopup(this,'College of Teacher Education Shed')"> 4 </div>
+        </div>
+
+        <!-- 5 CTED ANNEX BUILDING -->
+        <div class="marker" data-name="College of Teacher Education (CTED) Annex Building"
+            style="top:20%; left:58.2%;">
+        <div class="dot"
+            onclick="showPopup(this,'College of Teacher Education (CTED) Annex Building')"> 5 </div>
+        </div>
+
+        <!-- 6 NEW ACADEMIC BUILDING -->
+        <div class="marker" data-name="New Academic Building"
+            style="top:45%; left:38.2%;">
+        <div class="dot"
+            onclick="showPopup(this,'New Academic Building')"> 6 </div>
+        </div>
+
+        <!-- 7 College of Agriculture  -->
+        <div class="marker" data-name="College of Agriculture"
+            style="top:40%; left:61.5%;">
+        <div class="dot"
+            onclick="showPopup(this,'College of Agriculture')"> 7 </div>
+        </div>
+
+        <!-- 8 College of Agriculture Annex -->
+        <div class="marker" data-name="College of Agriculture Annex"
+            style="top:38%; left:60%;">
+        <div class="dot"
+            onclick="showPopup(this,'College of Agriculture Annex')"> 8 </div>
+        </div>
+
+        <!-- 9 HIM BUILDING -->
+        <div class="marker" data-name="HIM Building"
+            style="top:40%; left:52%;">
+        <div class="dot"
+            onclick="showPopup(this,'HIM Building')"> 9 </div>
+        </div>
+
+        <!-- 10 AB Building -->
+        <div class="marker" data-name="AB Building"
+            style="top:49.8%; left:78.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'AB Building')"> 10 </div>
+        </div>
+
+        <!-- 11 CICS BUILDING -->
+        <div class="marker" data-name="College of Information and Computing Sciences (CICS) Building"
+            style="top:49.7%; left:52%;">
+        <div class="dot"
+            onclick="showPopup(this,'College of Information and Computing Sciences (CICS) Building')"> 11 </div>
+        </div>
+
+        <!-- 12 LIBRARY -->
+        <div class="marker" data-name="Library"
+            style="top:40%; left:55%;">
+        <div class="dot"
+            onclick="showPopup(this,'Library')"> 12 </div>
+        </div>
+
+        <!-- 13 TVET Building -->
+        <div class="marker" data-name="TVET Building"
+            style="top:48%; left:73%;">
+        <div class="dot"
+            onclick="showPopup(this,'TVET Building')"> 13 </div>
+        </div>
+
+        <!-- 14 COMMUNITY OUTREACH PROGRAM -->
+        <div class="marker" data-name="Community Outreach Program"
+            style="top:50.9%; left:64%;">
+        <div class="dot"
+            onclick="showPopup(this,'Community Outreach Program')"> 14 </div>
+        </div>
+
+        <!-- 15 STUDENT CENTER -->
+        <div class="marker" data-name="Student Center"
+            style="top:51%; left:49%;">
+        <div class="dot"
+            onclick="showPopup(this,'Student Center')"> 15 </div>
+        </div>
+
+        <!-- 16 ADMINISTRATION BUILDING -->
+        <div class="marker" data-name="Administration Building"
+            style="top:50.5%; left:57%;">
+        <div class="dot"
+            onclick="showPopup(this,'Administration Building')"> 16 </div>
+        </div>
+
+        <!-- 17 BUSINESS AFFAIRS BUILDING OFFICE -->
+        <div class="marker" data-name="Business Affairs Building Office"
+            style="top:50.5%; left:59%;">
+        <div class="dot"
+            onclick="showPopup(this,'Business Affairs Building Office')"> 17 </div>
+        </div>
+
+        <!-- 18 RDE COMPLEX -->
+        <div class="marker" data-name="RDE Complex"
+            style="top:45.1%; left:42%;">
+        <div class="dot"
+            onclick="showPopup(this,'RDE Complex')"> 18 </div>
+        </div>
+
+        <!-- 19 BALAI ALUMNI BUILDING -->
+        <div class="marker" data-name="Balai Alumni Building"
+            style="top:57%; left:48%;">
+        <div class="dot"
+            onclick="showPopup(this,'Balai Alumni Building')"> 19 </div>
+        </div>
+
+        <!-- 20 HEALTH CLINIC -->
+        <div class="marker" data-name="Health Clinic"
+            style="top:50.9%; left:60.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'Health Clinic')"> 20 </div>
+        </div>
+
+        <!-- 21 FARM MECHANICS BUILDING -->
+        <div class="marker" data-name="Farm Mechanics Building"
+            style="top:50.3%; left:68%;">
+        <div class="dot"
+            onclick="showPopup(this,'Farm Mechanics Building')"> 21 </div>
+        </div>
+
+        <!-- 22 GYMNASIUM -->
+        <div class="marker" data-name="Gymnasium"
+            style="top:56%; left:53%;">
+        <div class="dot"
+            onclick="showPopup(this,'Gymnasium')"> 22 </div>
+        </div>
+
+        <!-- 23 FOOD PROCESSING -->
+        <div class="marker" data-name="Food Processing"
+            style="top:39%; left:49.5%;">
+        <div class="dot"
+            onclick="showPopup(this,'Food Processing')"> 23 </div>
+        </div>
+
+        <!-- 24 FOOD COURT -->
+        <div class="marker" data-name="Food Court"
+            style="top:47%; left:66%;">
+        <div class="dot"
+            onclick="showPopup(this,'Food Court')"> 24 </div>
+        </div>
+
+        <!-- 25 FOOD COURT ANNEX -->
+        <div class="marker" data-name="Food Court Annex"
+            style="top:48%; left:67%;">
+        <div class="dot"
+            onclick="showPopup(this,'Food Court Annex')"> 25 </div>
+        </div>
+
+        <!-- 27 NEW STUDENT CENTER -->
+        <div class="marker" data-name="New Student Center"
+            style="top:42%; left:38.3%;">
+        <div class="dot"
+            onclick="showPopup(this,'New Student Center')"> 27 </div>
+        </div>
+
+        <!-- 29 Guest House -->
+        <div class="marker" data-name="Guest House"
+            style="top:59%; left:45.2%;">
+        <div class="dot"
+            onclick="showPopup(this,'Guest House')"> 29 </div>
+        </div>
+
+        <!-- 30 DORMITORY 1 -->
+        <div class="marker" data-name="Dormitory 1"
+            style="top:39.5%; left:39%;">
+        <div class="dot"
+            onclick="showPopup(this,'Dormitory 1')"> 30 </div>
+        </div>
+
+        <!-- 31 DORMITORY 2 -->
+        <div class="marker" data-name="Dormitory 2"
+            style="top:40%; left:45.2%;">
+        <div class="dot"
+            onclick="showPopup(this,'Dormitory 2')"> 31 </div>
+        </div>
+
+        <!-- 32 DORMITORY 3 -->
+        <div class="marker" data-name="Dormitory 3"
+            style="top:36.6%; left:45.2%;">
+        <div class="dot"
+            onclick="showPopup(this,'Dormitory 3')"> 32 </div>
+        </div>
+
+        <!-- 33 DORMITORY 4 -->
+        <div class="marker" data-name="Dormitory 4"
+            style="top:33.6%; left:45.2%;">
+        <div class="dot"
+            onclick="showPopup(this,'Dormitory 4')"> 33</div>
+        </div>
+
+        <!-- 34 Boys Dormitory -->
+        <div class="marker" data-name="Boys Dormitory"
+            style="top:51%; left:86.5%;">
+        <div class="dot"
+            onclick="showPopup(this,'Boys Dormitory')"> 34 </div>
+        </div>
+
+        <!-- 35 GIRLS DORMITORY -->
+        <div class="marker" data-name="Girls Dormitory"
+            style="top:53%; left:45.2%;">
+        <div class="dot"
+            onclick="showPopup(this,'Girls Dormitory')"> 35 </div>
+        </div>
+
+        <!-- 36 Cottage 1  -->
+        <div class="marker" data-name="Cottage 1"
+            style="top:41.3%; left:71%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 1')"> 36 </div>
+        </div>
+
+        <!-- 37 Cottage 2  -->
+        <div class="marker" data-name="Cottage 2"
+            style="top:39%; left:71%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 2')"> 37 </div>
+        </div>
+
+        <!-- 38 Cottage 3  -->
+        <div class="marker" data-name="Cottage 3"
+            style="top:34%; left:71.3%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 3')"> 38 </div>
+        </div>
+
+        <!-- 39 Cottage 4  -->
+        <div class="marker" data-name="Cottage 4"
+            style="top:31%; left:71.3%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 4')"> 39 </div>
+        </div>
+
+        <!-- 40 Cottage 5  -->
+        <div class="marker" data-name="Cottage 5"
+            style="top:27%; left:71.3%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 5')"> 40 </div>
+        </div>
+
+        <!-- 41 Cottage 6  -->
+        <div class="marker" data-name="Cottage 6"
+            style="top:25.2%; left:71.5%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 6')"> 41 </div>
+        </div>
+
+        <!-- 42 Cottage 7  -->
+        <div class="marker" data-name="Cottage 7"
+            style="top:23.5%; left:71.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 7')"> 42 </div>
+        </div>
+
+        <!-- 43 Cottage 8  -->
+        <div class="marker" data-name="Cottage 8"
+            style="top:26%; left:76%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 8')"> 43 </div>
+        </div>
+
+        <!-- 44 Cottage 9  -->
+        <div class="marker" data-name="Cottage 9"
+            style="top:27.6%; left:76%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 9')"> 44 </div>
+        </div>
+
+        <!-- 45 Cottage 10  -->
+        <div class="marker" data-name="Cottage 10"
+            style="top:23.7%; left:76%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 10')"> 45 </div>
+        </div>
+
+        <!-- 46 Cottage 11 -->
+        <div class="marker" data-name="Cottage 11"
+            style="top:23%; left:46.4%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 11')"> 46 </div>
+        </div>
+
+        <!-- 47 COTTAGE 12 -->
+        <div class="marker" data-name="Cottage 12"
+            style="top:31.7%; left:20.6%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 12')"> 47 </div>
+        </div>
+
+        <!-- 48 COTTAGE 13 -->
+        <div class="marker" data-name="Cottage 13"
+            style="top:39.5%; left:29.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 13')"> 48 </div>
+        </div>
+
+        <!-- 49 Cell Site Tower -->
+        <div class="marker" data-name="Cell Site Tower"
+            style="top:62.9%; left:64%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cell Site Tower')"> 49 </div>
+        </div>
+
+        <!-- 50 COTTAGE 15 -->
+        <div class="marker" data-name="Cottage 15"
+            style="top:72.7%; left:57%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 15')"> 50 </div>
+        </div>
+
+        <!-- 51 COTTAGE 16 -->
+        <div class="marker" data-name="Cottage 16"
+            style="top:72.9%; left:54%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 16')"> 50 </div>
+        </div>
+
+        <!-- 52 COTTAGE 14 -->
+        <div class="marker" data-name="Cottage 15"
+            style="top:35.5%; left:35%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 15')"> 52 </div>
+        </div>
+
+        <!-- 53 COTTAGE 15 -->
+        <div class="marker" data-name="Cottage 15"
+            style="top:36%; left:30%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 15')"> 53 </div>
+        </div>
+
+        <!-- 54 COTTAGE 16 -->
+        <div class="marker" data-name="Cottage 16"
+            style="top:38%; left:31.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 16')"> 54 </div>
+        </div>
+
+        <!-- 55 COTTAGE 17 -->
+        <div class="marker" data-name="Cottage 17"
+            style="top:38%; left:35.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 17')"> 55 </div>
+        </div>
+
+        <!-- 56 COTTAGE 18 -->
+        <div class="marker" data-name="Cottage 18"
+            style="top:72.7%; left:51.2%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 18')"> 56 </div>
+        </div>
+
+        <!-- 57 COTTAGE 19 -->
+        <div class="marker" data-name="Cottage 19"
+            style="top:72.7%; left:48%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cottage 19')"> 57 </div>
+        </div>
+
+        <!-- 58 PAGASA MINI STATION -->
+        <div class="marker" data-name="PAGASA Mini Station"
+            style="top:57.5%; left:61%;">
+        <div class="dot"
+            onclick="showPopup(this,'PAGASA Mini Station')"> 58 </div>
+        </div>
+
+        <!-- 59 Radio Cell and Tower -->
+        <div class="marker" data-name="Radio Cell and Tower"
+            style="top:51.5%; left:52%;">
+        <div class="dot"
+            onclick="showPopup(this,'Radio Cell and Tower')"> 59 </div>
+        </div>
+
+        <!-- 60 Turbine Pump House -->
+        <div class="marker" data-name="Turbine Pump House"
+            style="top:17%; left:48.1%;">
+        <div class="dot"
+            onclick="showPopup(this,'Turbine Pump House')"> 60 </div>
+        </div>
+
+        <!-- 61 Water Tank -->
+        <div class="marker" data-name="Water Tank"
+            style="top:16%; left:47%;">
+        <div class="dot"
+            onclick="showPopup(this,'Water Tank')"> 61 </div>
+        </div>
+
+        <!-- 62 Campus Security -->
+        <div class="marker" data-name="Campus Security"
+            style="top:43.5%; left:41.3%;">
+        <div class="dot"
+            onclick="showPopup(this,'Campus Security')"> 62 </div>
+        </div>
+
+        <!-- 63 GUARD HOUSE -->
+        <div class="marker" data-name="Guard House"
+            style="top:42.1%; left:41.3%;">
+        <div class="dot"
+            onclick="showPopup(this,'Guard House')"> 63 </div>
+        </div>
+
+        <!-- 64 COMFORT ROOM 1 -->
+        <div class="marker" data-name="Comfort Room 1"
+            style="top:54.9%; left:59.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'Comfort Room 1')"> 64 </div>
+        </div>
+
+        <!-- 65 Comfort Room 2 -->
+        <div class="marker" data-name="Comfort Room 2"
+            style="top:53%; left:85%;">
+        <div class="dot"
+            onclick="showPopup(this,'Comfort Room 2')"> 65 </div>
+        </div>
+
+        <!-- 66 Comfort Room 3  -->
+        <div class="marker" data-name="Comfort Room 3"
+            style="top:39.6%; left:65.7%;">
+        <div class="dot"
+            onclick="showPopup(this,'Comfort Room 3 ')"> 66 </div>
+        </div>
+
+        <!-- 67 CAMPUS OVAL -->
+        <div class="marker" data-name="Campus Oval"
+            style="top:63%; left:55%;">
+        <div class="dot"
+            onclick="showPopup(this,'Campus Oval')"> 67 </div>
+        </div>
+
+        <!-- 68 BASKETBALL COURT -->
+        <div class="marker" data-name="Basketball Court"
+            style="top:56%; left:50.7%;">
+        <div class="dot"
+            onclick="showPopup(this,'Basketball Court')"> 68 </div>
+        </div>
+
+        <!-- 69 VOLLEYBALL COURT -->
+        <div class="marker" data-name="Volleyball Court"
+            style="top:57.5%; left:57%;">
+        <div class="dot"
+            onclick="showPopup(this,'Volleyball Court')"> 69 </div>
+        </div>
+
+        <!-- 70 MULTI PURPOSE DRYING PAVEMENT -->
+        <div class="marker" data-name="Multi Purpose Drying Pavement"
+            style="top:69%; left:51.2%;">
+        <div class="dot"
+            onclick="showPopup(this,'Multi Purpose Drying Pavement')"> 70 </div>
+        </div>
+
+        <!-- 71 NURSERY 1 -->
+        <div class="marker" data-name="Nursery 1"
+            style="top:35.5%; left:51.6%;">
+        <div class="dot"
+            onclick="showPopup(this,'Nursery 1')"> 71 </div>
+        </div>
+
+        <!-- 72 New TVET Building -->
+        <div class="marker" data-name="New TVET Building"
+            style="top:47%; left:71%;">
+        <div class="dot"
+            onclick="showPopup(this,'NEw TVET Building')"> 72 </div>
+        </div>
+
+        <!-- 73 New Goat Housing -->
+        <div class="marker" data-name="New Goat Housing"
+            style="top:6%; left:73%;">
+        <div class="dot"
+            onclick="showPopup(this,'New Goat Housing')"> 73 </div>
+        </div>
+
+        <!-- 75 CATTLE RANCH HOUSE -->
+        <div class="marker" data-name="Cattle Ranch House"
+            style="top:43.5%; left:28.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cattle Ranch House')"> 75 </div>
+        </div>
+
+        <!-- 76 CATTLE FEEDING AREA -->
+        <div class="marker" data-name="Cattle Feeding Area"
+            style="top:46.5%; left:28.5%;">
+        <div class="dot"
+            onclick="showPopup(this,'Cattle Feeding Area')"> 76 </div>
+        </div>
+
+        <!-- 77 Chicken House -->
+        <div class="marker" data-name="Chicken House"
+            style="top:15%; left:71.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'Chicken House')"> 77 </div>
+        </div>
+
+        <!-- 78 Sheep House 1 -->
+        <div class="marker" data-name="Sheep House 1"
+            style="top:16.7%; left:78.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'Sheep House 1')"> 78 </div>
+        </div>
+
+        <!-- 79 Sheep House 2 -->
+        <div class="marker" data-name="Sheep House 2"
+            style="top:12%; left:68.5%;">
+        <div class="dot"
+            onclick="showPopup(this,'Sheep House 2')"> 79 </div>
+        </div>
+
+        <!-- 80 Goat House -->
+        <div class="marker" data-name="Goat House"
+            style="top:9%; left:68.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'Goat House')"> 80 </div>
+        </div>
+
+        <!-- 81 Poultry House -->
+        <div class="marker" data-name="Poultry House"
+            style="top:18.5%; left:73.3%;">
+        <div class="dot"
+            onclick="showPopup(this,'Poultry House')"> 81 </div>
+        </div>
+
+        <!-- 82 Native Pig House  -->
+        <div class="marker" data-name="Native Pig House"
+            style="top:38%; left:83%;">
+        <div class="dot"
+            onclick="showPopup(this,'Native Pig House')"> 82 </div>
+        </div>
+
+        <!-- 83 Piggery -->
+        <div class="marker" data-name="Piggery"
+            style="top:12%; left:74%;">
+        <div class="dot"
+            onclick="showPopup(this,'Piggery')"> 83 </div>
+        </div>
+
+        <!-- 84 VERMI HOUSE -->
+        <div class="marker" data-name="Vermi House"
+            style="top:34.2%; left:49.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'Vermi House')"> 84 </div>
+        </div>
+
+        <!-- 86 ROTC BUILDING -->
+        <div class="marker" data-name="ROTC Building"
+            style="top:47.5%; left:45.2%;">
+        <div class="dot"
+            onclick="showPopup(this,'ROTC Building')"> 86 </div>
+        </div>
+
+        <!-- 87 Kubo 1 -->
+        <div class="marker" data-name="Kubo 1"
+            style="top:43%; left:64.6%;">
+        <div class="dot"
+            onclick="showPopup(this,'Kubo 1')"> 87 </div>
+        </div>
+
+        <!-- 87 Kubo 2 -->
+        <div class="marker" data-name="Kubo 2"
+            style="top:43%; left:63%;">
+        <div class="dot"
+            onclick="showPopup(this,'Kubo 2')"> 87 </div>
+        </div>
+
+        <!-- 87 Kubo 3 -->
+        <div class="marker" data-name="Kubo 3"
+            style="top:47%; left:64.6%;">
+        <div class="dot"
+            onclick="showPopup(this,'Kubo 3')"> 87 </div>
+        </div>
+
+        <!-- 87 Kubo 4 -->
+        <div class="marker" data-name="Kubo 4"
+            style="top:49%; left:64.8%;">
+        <div class="dot"
+            onclick="showPopup(this,'Kubo 4')"> 87 </div>
+        </div>
+
+        <!-- 88 COMFORT ROOM -->
+        <div class="marker" data-name="New Comfort Room"
+            style="top:54.7%; left:48%;">
+        <div class="dot"
+            onclick="showPopup(this,'New Comfort Room')"> 88 </div>
+        </div>
+
+        <!-- 89 COFFEE SHOP -->
+        <div class="marker" data-name="Coffee Shop"
+            style="top:41%; left:49.5%;">
+        <div class="dot"
+            onclick="showPopup(this,'Coffee Shop')"> 89 </div>
+        </div>
+
+        <!-- 90 Valena View Deck -->
+        <div class="marker" data-name="Valena View Deck"
+            style="top:45%; left:90.7%;">
+        <div class="dot"
+            onclick="showPopup(this,'Valena View Deck')"> 90 </div>
+        </div>
+
+        
+
+        
+    </div>
+
+</div>
+
+<div id="popup" class="popup">
+
+    <span class="close-btn" onclick="closePopup()">✖</span>
+
+    <h3 id="popupTitle"></h3>
+
+    <button onclick="navigateNow()">
+        Navigate
+    </button>
+
+    </div>
+<script>
+
+const locations=[
+
+"College of Teacher Education (CTED) Building",
+"College of Teacher Education (CTED) Student Council",
+"College of Teacher Education (CTED) Shed",
+"College of Teacher Education (CTED) Annex Building",
+"New Academic Building",
+"College of Agriculture",
+"College of Agriculture Annex",
+"HIM Building",
+"AB Building",
+"College of Information and Computing Sciences (CICS) Building",
+"Library",
+"TVET Building",
+"Community Outreach Program",
+"Student Center",
+"Administration Building",
+"Business Affairs Building Office",
+"RDE Complex",
+"Balai Alumni Building",
+"Health Clinic",
+"Farm Mechanics Building",
+"Gymnasium",
+"Food Processing",
+"Food Court",
+"Food Court Annex",
+"New Student Center",
+"Canteen 3",
+"Guest House",
+"Dormitory 1",
+"Dormitory 2",
+"Dormitory 3",
+"Dormitory 4",
+"Boys Dormitory",
+"Girls Dormitory",
+"Cottage 1",
+"Cottage 2",
+"Cottage 3",
+"Cottage 4",
+"Cottage 5",
+"Cottage 6",
+"Cottage 7",
+"Cottage 8",
+"Cottage 9",
+"Cottage 10",
+"Cottage 11",
+"Cottage 12",
+"Cottage 13",
+"Cell Site Tower",
+"Cottage 14",
+"Cottage 15",
+"Cottage 16",
+"Cottage 17",
+"Cottage 18",
+"Cottage 19",
+"PAGASA Mini Station",
+"Radio Cell and Tower",
+"Turbine Pump House",
+"Water Tank",
+"Campus Security",
+"Guard House",
+"Comfort Room 1",
+"Comfort Room 2",
+"Comfort Room 3",
+"Campus Oval",
+"Basketball Court",
+"Volleyball Court",
+"Multi Purpose Drying Pavement",
+"Nursery 1",
+"New TVET Building",
+"New Goat Housing",
+"Carabao Ranch",
+"Cattle Ranch House",
+"Cattle Feeding Area",
+"Chicken House",
+"Sheep House 1",
+"Sheep House 2",
+"Goat House",
+"Poultry House",
+"Native Pig House",
+"Piggery",
+"Vermi House",
+"ROTC Building",
+"Kubo 1",
+"Kubo 2",
+"Kubo 3",
+"Kubo 4",
+"New Comfort Room",
+"Coffee Shop",
+"Valena View Deck",
+
+];
+
+let selectedPlace="";
+
+function searchLocation(){
+
+    const input=document
+    .getElementById("searchInput")
+    .value
+    .toLowerCase();
+
+    const results=document.getElementById("searchResults");
+
+    results.innerHTML="";
+
+    if(input==""){
+
+        results.style.display="none";
+        return;
+
+    }
+
+    locations
+    .filter(place=>place.toLowerCase().includes(input))
+    .forEach(place=>{
+
+        const div=document.createElement("div");
+
+        div.innerHTML=place;
+
+        div.onclick=function(){
+
+    document.getElementById("searchInput").value = place;
+
+    results.style.display = "none";
+
+    focusMarker(place);
+
+}
+
+        results.appendChild(div);
+
+    });
+
+    results.style.display="block";
+
+}
+
+function focusMarker(name){
+
+    // alisin ang highlight sa ibang marker
+    document.querySelectorAll(".dot").forEach(dot=>{
+        dot.classList.remove("active");
+    });
+
+    const marker = document.querySelector(`.marker[data-name="${name}"]`);
+
+    if(marker){
+
+        const dot = marker.querySelector(".dot");
+
+        // highlight marker
+        dot.classList.add("active");
+
+        // scroll papunta sa marker
+        marker.scrollIntoView({
+            behavior:"smooth",
+            block:"center",
+            inline:"center"
+        });
+
+        // AUTOMATIC POPUP
+        showPopup(dot, name);
+
+    }
+
+}
+
+function showPopup(dot,name){
+
+    selectedPlace=name;
+
+    const popup=document.getElementById("popup");
+
+    popup.style.display="block";
+
+    popup.style.left=
+    (dot.getBoundingClientRect().left+20)+"px";
+
+    popup.style.top=
+    (window.scrollY+
+    dot.getBoundingClientRect().top-70)+"px";
+
+    document
+    .getElementById("popupTitle")
+    .innerHTML=name;
+
+}
+
+function navigateNow(){
+
+    localStorage.setItem(
+        "selectedDestination",
+        selectedPlace
+    );
+
+    window.location.href="ar.html";
+
+}
+
+function closePopup(){
+
+    document.getElementById("popup").style.display = "none";
+r
+    document.querySelectorAll(".dot").forEach(dot=>{
+        dot.classList.remove("active");
+    });
+
+}
+</script>
+
+</body>
+</html>

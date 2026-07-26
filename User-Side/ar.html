@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AR Navigation - CSUL</title>
+
+<!-- 8th Wall SCRIPT (ready for integration) -->
+<script src="https://apps.8thwall.com/xrweb?appKey=YOUR_APP_KEY"></script>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    margin:0;
+    overflow:hidden;
+    background:black;
+}
+
+/* AR SCENE */
+.ar-scene{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    background:#000;
+}
+
+/* CAMERA PLACEHOLDER (8th Wall replaces this) */
+.camera-view{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:linear-gradient(120deg,#111,#222);
+}
+
+/* TOP INFO */
+.top-ui{
+    position:absolute;
+    top:0;
+    width:100%;
+    padding:15px;
+    background:rgba(0,0,0,.4);
+    color:white;
+    text-align:center;
+    z-index:10;
+}
+
+/* DESTINATION LABEL */
+.destination-label{
+    position:absolute;
+    top:80px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,.6);
+    padding:12px 18px;
+    border-radius:12px;
+    color:white;
+    text-align:center;
+    z-index:10;
+    backdrop-filter:blur(10px);
+}
+
+.destination-label h2{
+    font-size:18px;
+}
+
+/* AR ARROW */
+.arrow{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:70px;
+    color:#00ff88;
+    animation:bounce 1s infinite;
+    z-index:10;
+}
+
+@keyframes bounce{
+    0%,100%{ transform:translate(-50%,-50%) translateY(0); }
+    50%{ transform:translate(-50%,-50%) translateY(-15px); }
+}
+
+/* DISTANCE */
+.distance{
+    position:absolute;
+    bottom:120px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,.6);
+    padding:10px 15px;
+    border-radius:10px;
+    color:white;
+    z-index:10;
+}
+
+/* START BUTTON */
+.start-btn{
+    position:absolute;
+    bottom:40px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:14px 25px;
+    border:none;
+    border-radius:30px;
+    background:#00ff88;
+    font-weight:bold;
+    cursor:pointer;
+    z-index:10;
+}
+
+.start-btn:hover{
+    background:#00cc6a;
+}
+</style>
+</head>
+
+<body>
+
+<div class="ar-scene">
+
+    <!-- CAMERA (8th Wall will replace this) -->
+    <div class="camera-view"></div>
+
+    <!-- UI -->
+    <div class="top-ui">
+        🧭 AR Navigation Active
+    </div>
+
+    <div class="destination-label">
+        <h2 id="destination">Loading...</h2>
+       <p id="currentWaypoint">Waiting to start...</p>
+    </div>
+
+    <!-- AR POINTER -->
+    <div class="arrow" id="arrowPlaceholder">⬆️</div>
+
+    <!-- DISTANCE -->
+    <div class="distance">
+        Distance: <span id="distance">--</span> meters
+    </div>
+
+    <!-- START -->
+    <button class="start-btn" onclick="startAR()">
+        Start Navigation
+    </button>
+
+</div>
+
+<script>
+
+/* GET DESTINATION */
+let destination = localStorage.getItem("selectedDestination");
+
+document.getElementById("destination").innerText =
+destination ? destination : "No Destination Selected";
+
+
+/* MOCK DISTANCE (for now) */
+let fakeDistance = Math.floor(Math.random() * 50) + 10;
+document.getElementById("distance").innerText = fakeDistance;
+
+
+/* ROUTES (temporary) */
+const routes = {
+
+    "CICS Building": [
+        "Main Gate",
+        "Waypoint 1",
+        "Waypoint 2",
+        "CICS Building"
+    ]
+
+};
+
+
+/* GET CURRENT ROUTE */
+const currentRoute = routes[destination];
+
+console.log(currentRoute);
+
+
+/* START AR */
+function startAR() {
+
+    document.getElementById("currentWaypoint").innerHTML =
+        `
+        Current Waypoint: Main Gate <br>
+        Next Waypoint: Waypoint 1
+        `;
+
+}
+
+
+
+
+/* FUTURE UPGRADE PLACEHOLDER */
+function updateDirection(){
+
+    // dito natin ilalagay ang real AR navigation
+    // kapag gumana na ulit ang 8th Wall
+
+}
+
+</script>
+
+</body>
+</html>
