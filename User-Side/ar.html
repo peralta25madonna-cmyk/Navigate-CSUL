@@ -1,66 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Navigate CSUL AR</title>
 
 <style>
-
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
 }
 
-body{
+html,body{
+    width:100%;
+    height:100%;
     overflow:hidden;
     background:#000;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
 }
 
 video{
     position:fixed;
     top:0;
     left:0;
-    width:100vw;
-    height:100vh;
+    width:100%;
+    height:100%;
     object-fit:cover;
+    z-index:1;
 }
 
 #info{
-    position:absolute;
+    position:fixed;
     top:20px;
     left:20px;
-    background:rgba(0,0,0,.65);
+    z-index:99999;
+    background:rgba(0,0,0,.7);
     color:#fff;
     padding:15px 20px;
-    border-radius:12px;
-    font-size:18px;
+    border-radius:10px;
+    border:2px solid #00ff00;
+    font-size:20px;
     line-height:1.8;
-    z-index:10;
+    pointer-events:none;
 }
 
+#destination{
+    color:#00ff00;
+    font-weight:bold;
+}
+
+#distance{
+    color:yellow;
+    font-weight:bold;
+}
 </style>
 
 </head>
-
 <body>
 
-<video id="camera" autoplay playsinline></video>
+<video id="camera" autoplay playsinline muted></video>
 
 <div id="info">
+    <div>🎯 <b>Destination</b></div>
+    <div id="destination">CICS Building</div>
 
-<b>🎯 Destination</b><br>
-<span id="destination">CICS Building</span>
+    <br>
 
-<br><br>
-
-<b>📏 Distance</b><br>
-<span id="distance">120</span> meters
-
+    <div>📏 <b>Distance</b></div>
+    <div><span id="distance">120</span> meters</div>
 </div>
 
 <script>
@@ -73,23 +82,23 @@ async function startCamera(){
 
         const stream = await navigator.mediaDevices.getUserMedia({
             video:{
-                facingMode:"environment"
+                facingMode:{ideal:"environment"}
             },
             audio:false
         });
 
         video.srcObject = stream;
 
-    }catch(error){
+    }catch(err){
 
-        alert("Unable to access camera.");
-        console.error(error);
+        alert("Camera Error: " + err.message);
+        console.log(err);
 
     }
 
 }
 
-startCamera();
+window.onload = startCamera;
 
 </script>
 
