@@ -89,6 +89,13 @@ p{
 <p>Loading Campus Navigation...</p>
 
 <script>
+    const params = new URLSearchParams(window.location.search);
+
+const start = params.get("start");
+
+if (start) {
+    localStorage.setItem("currentLocation", start);
+}
 setTimeout(() => {
     window.location.href = "user-type.html";
 }, 2000);
