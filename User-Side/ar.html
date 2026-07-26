@@ -31,6 +31,7 @@ video{
     border-radius:10px;
     z-index:10;
     font-family:Arial;
+    font-size:18px;
 }
 
 </style>
@@ -39,49 +40,82 @@ video{
 
 <body>
 
+
 <div id="info">
 Starting Camera...
 </div>
 
+
 <video id="camera" autoplay playsinline></video>
+
 
 
 <script>
 
+
 const video = document.getElementById("camera");
+const info = document.getElementById("info");
 
 
-navigator.mediaDevices.getUserMedia({
 
-    video:{
-        facingMode:{
-            ideal:"environment"
-        }
-    },
+async function startCamera(){
 
-    audio:false
+    try{
 
-})
+        const stream = await navigator.mediaDevices.getUserMedia({
 
-.then(stream=>{
+            video:{
+                facingMode:{
+                    ideal:"environment"
+                }
+            },
 
-    video.srcObject = stream;
+            audio:false
 
-    document.getElementById("info").innerHTML =
-    "✅ Camera Working";
+        });
 
-    console.log("Camera started");
 
-})
+        video.srcObject = stream;
 
-.catch(error=>{
 
-    document.getElementById("info").innerHTML =
-    "❌ Camera Error: " + error;
+        await video.play();
 
-    console.log(error);
 
-});
+        info.innerHTML =
+        `
+        ✅ Camera Working <br><br>
+        📷 Rear Camera Active
+        `;
+
+
+        console.log("Camera started successfully");
+
+
+    }
+
+    catch(error){
+
+
+        info.innerHTML =
+        `
+        ❌ Camera Error <br>
+        ${error.name}<br>
+        ${error.message}
+        `;
+
+
+        console.log(
+            "Camera Error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+startCamera();
 
 
 </script>
