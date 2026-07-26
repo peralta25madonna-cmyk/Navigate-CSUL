@@ -5,9 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>AR Navigation</title>
-
-<script type="module" src="/app.js"></script>
+<title>AR Camera Test</title>
 
 <style>
 
@@ -15,16 +13,14 @@ body{
     margin:0;
     overflow:hidden;
     background:black;
-    font-family:Arial;
 }
 
-/* camera area */
-#ar-container{
+video{
     width:100vw;
     height:100vh;
+    object-fit:cover;
 }
 
-/* information */
 #info{
     position:absolute;
     top:20px;
@@ -34,72 +30,56 @@ body{
     padding:15px;
     border-radius:10px;
     z-index:10;
+    font-family:Arial;
 }
 
 </style>
 
 </head>
 
-
 <body>
 
-
-<div id="ar-container">
-
-</div>
-
-
 <div id="info">
-Loading AR Camera...
+Starting Camera...
 </div>
+
+<video id="camera" autoplay playsinline></video>
 
 
 <script>
 
+const video = document.getElementById("camera");
 
-window.onload=function(){
-
-    let current = localStorage.getItem("currentLocation");
-    let destination = localStorage.getItem("selectedDestination");
-
-
-    document.getElementById("info").innerHTML =
-    `
-    📍 Current Location: ${current || "Main Gate"} <br>
-    🎯 Destination: ${destination || "None"} <br><br>
-    Starting Camera...
-    `;
-
-
-}
-
-
-// CAMERA TEST
 
 navigator.mediaDevices.getUserMedia({
 
     video:{
-        facingMode:"environment"
-    }
+        facingMode:{
+            ideal:"environment"
+        }
+    },
+
+    audio:false
 
 })
 
 .then(stream=>{
 
-    console.log("Camera Opened");
+    video.srcObject = stream;
 
-    document.getElementById("info").innerHTML +=
-    "<br>✅ Camera Working";
+    document.getElementById("info").innerHTML =
+    "✅ Camera Working";
 
+    console.log("Camera started");
 
 })
 
 .catch(error=>{
 
-    console.log(error);
+    document.getElementById("info").innerHTML =
+    "❌ Camera Error: " + error;
 
-    document.getElementById("info").innerHTML +=
-    "<br>❌ Camera Error";
+    console.log(error);
 
 });
 
