@@ -1,21 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>AR Navigation</title>
 
-<script src="https://cdn.8thwall.com/web/xrextras/xrextras.js"></script>
-<script src="https://apps.8thwall.com/xrweb?appKey=YOUR_APP_KEY"></script>
+<script type="module" src="/app.js"></script>
 
 <style>
 
 body{
     margin:0;
     overflow:hidden;
+    background:black;
+    font-family:Arial;
 }
 
+/* camera area */
+#ar-container{
+    width:100vw;
+    height:100vh;
+}
+
+/* information */
 #info{
     position:absolute;
     top:20px;
@@ -25,7 +34,6 @@ body{
     padding:15px;
     border-radius:10px;
     z-index:10;
-    font-family:Arial;
 }
 
 </style>
@@ -35,12 +43,19 @@ body{
 
 <body>
 
+
+<div id="ar-container">
+
+</div>
+
+
 <div id="info">
-    Loading AR Navigation...
+Loading AR Camera...
 </div>
 
 
 <script>
+
 
 window.onload=function(){
 
@@ -52,10 +67,42 @@ window.onload=function(){
     `
     📍 Current Location: ${current || "Main Gate"} <br>
     🎯 Destination: ${destination || "None"} <br><br>
-    AR Camera Ready
+    Starting Camera...
     `;
 
+
 }
+
+
+// CAMERA TEST
+
+navigator.mediaDevices.getUserMedia({
+
+    video:{
+        facingMode:"environment"
+    }
+
+})
+
+.then(stream=>{
+
+    console.log("Camera Opened");
+
+    document.getElementById("info").innerHTML +=
+    "<br>✅ Camera Working";
+
+
+})
+
+.catch(error=>{
+
+    console.log(error);
+
+    document.getElementById("info").innerHTML +=
+    "<br>❌ Camera Error";
+
+});
+
 
 </script>
 
