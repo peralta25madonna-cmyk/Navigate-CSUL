@@ -39,7 +39,9 @@ video{
 
 <body>
 
-
+<div id="info">
+Starting Camera...
+</div>
 
 <video id="camera" autoplay playsinline></video>
 
@@ -65,8 +67,8 @@ navigator.mediaDevices.getUserMedia({
 
     video.srcObject = stream;
 
-    
-   
+    document.getElementById("info").innerHTML =
+    "✅ Camera Working";
 
     console.log("Camera started");
 
@@ -86,4 +88,4 @@ navigator.mediaDevices.getUserMedia({
 
 
 </body>
-</html>  ito yung dati kong codes lagyan mo lang ng destination at distance na naka display sa camera
+</html>
