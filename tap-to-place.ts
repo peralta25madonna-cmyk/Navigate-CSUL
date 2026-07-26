@@ -15,7 +15,10 @@ ecs.registerComponent({
       const newEid = world.createEntity(schemaAttribute.get(eid).prefab)
       const newEntity = world.getEntity(newEid)
       newEntity.setLocalPosition(e.data.worldPosition)
-      newEntity.set(ecs.Quaternion, ecs.math.quat.yRadians(Math.random() * Math.PI))
+      newEntity.set(
+  ecs.Quaternion,
+  ecs.math.quat.yRadians(0)
+)
       world.events.dispatch(eid, OBJECT_PLACED_EVENT)
     })
   }
