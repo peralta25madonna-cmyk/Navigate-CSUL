@@ -198,7 +198,15 @@ function renderList(list){
 /* SELECT DESTINATION */
 function selectPlace(name){
 
+    // Save current location
+    localStorage.setItem("currentLocation", "Main Gate");
+
+    // Save selected destination
     localStorage.setItem("selectedDestination", name);
+
+    alert(
+        "Current Location: Main Gate\nDestination: " + name
+    );
 
     window.location.href = "http://localhost:58000/";
 
