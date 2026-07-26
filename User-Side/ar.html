@@ -29,8 +29,10 @@ video{
     color:white;
     padding:15px;
     border-radius:10px;
-    z-index:10;
+    z-index:999;
     font-family:Arial;
+    font-size:18px;
+    line-height:1.8;
 }
 
 </style>
@@ -39,15 +41,21 @@ video{
 
 <body>
 
-
-
 <video id="camera" autoplay playsinline></video>
 
+<div id="info">
+    <b>🎯 Destination</b><br>
+    <span id="destination">CICS Building</span>
+
+    <br><br>
+
+    <b>📏 Distance</b><br>
+    <span id="distance">120</span> meters
+</div>
 
 <script>
 
 const video = document.getElementById("camera");
-
 
 navigator.mediaDevices.getUserMedia({
 
@@ -65,9 +73,6 @@ navigator.mediaDevices.getUserMedia({
 
     video.srcObject = stream;
 
-    
-   
-
     console.log("Camera started");
 
 })
@@ -81,9 +86,7 @@ navigator.mediaDevices.getUserMedia({
 
 });
 
-
 </script>
 
-
 </body>
-</html> 
+</html>
