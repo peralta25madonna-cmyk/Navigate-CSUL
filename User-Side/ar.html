@@ -31,7 +31,6 @@ video{
     border-radius:10px;
     z-index:10;
     font-family:Arial;
-    font-size:18px;
 }
 
 </style>
@@ -41,85 +40,50 @@ video{
 <body>
 
 
-<div id="info">
-Starting Camera...
-</div>
-
 
 <video id="camera" autoplay playsinline></video>
 
 
-
 <script>
 
-
 const video = document.getElementById("camera");
-const info = document.getElementById("info");
 
 
+navigator.mediaDevices.getUserMedia({
 
-async function startCamera(){
+    video:{
+        facingMode:{
+            ideal:"environment"
+        }
+    },
 
-    try{
+    audio:false
 
-        const stream = await navigator.mediaDevices.getUserMedia({
+})
 
-            video:{
-                facingMode:{
-                    ideal:"environment"
-                }
-            },
+.then(stream=>{
 
-            audio:false
+    video.srcObject = stream;
 
-        });
+    
+   
 
+    console.log("Camera started");
 
-        video.srcObject = stream;
+})
 
+.catch(error=>{
 
-        await video.play();
+    document.getElementById("info").innerHTML =
+    "❌ Camera Error: " + error;
 
+    console.log(error);
 
-        info.innerHTML =
-        `
-        ✅ Camera Working <br><br>
-        📷 Rear Camera Active
-        `;
-
-
-        console.log("Camera started successfully");
-
-
-    }
-
-    catch(error){
-
-
-        info.innerHTML =
-        `
-        ❌ Camera Error <br>
-        ${error.name}<br>
-        ${error.message}
-        `;
-
-
-        console.log(
-            "Camera Error:",
-            error
-        );
-
-    }
-
-}
-
-
-
-startCamera();
+});
 
 
 </script>
 
 
 </body>
-</html>
+</html>  ito yung dati kong codes lagyan mo lang ng destination at distance na naka display sa camera
