@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>AR Camera Test</title>
 
 <style>
@@ -13,58 +15,95 @@ body{
     background:black;
 }
 
+
+/* CAMERA */
 video{
+    position:absolute;
+    top:0;
+    left:0;
+
     width:100vw;
     height:100vh;
+
     object-fit:cover;
+
+    z-index:1;
 }
 
+
+/* STATUS */
 #info{
-    position:absolute;
+
+    position:fixed;
+
     top:20px;
     left:20px;
+
     background:rgba(0,0,0,.6);
+
     color:white;
+
     padding:15px;
+
     border-radius:10px;
+
     z-index:10;
+
     font-family:Arial;
+
 }
+
 
 
 /* HOME BUTTON */
 
 .home-btn{
 
-    position:absolute;
+    position:fixed;
+
     bottom:30px;
+
     left:50%;
+
     transform:translateX(-50%);
 
-    padding:15px 30px;
+
+    padding:15px 35px;
+
 
     border:none;
+
     border-radius:30px;
 
+
     background:#00ff88;
+
     color:black;
 
+
     font-size:18px;
+
     font-weight:bold;
 
-    z-index:10;
+
+    z-index:9999;
+
+
     cursor:pointer;
 
-}
-
-
-.home-btn:hover{
-
-    background:#00cc6a;
 
 }
+
+
+.home-btn:active{
+
+    transform:translateX(-50%) scale(.95);
+
+}
+
 
 </style>
+
 
 </head>
 
@@ -80,6 +119,7 @@ Starting Camera...
 <video id="camera" autoplay playsinline></video>
 
 
+
 <button class="home-btn" onclick="goHome()">
 🏠 Home
 </button>
@@ -88,15 +128,23 @@ Starting Camera...
 
 <script>
 
+
 const video = document.getElementById("camera");
+
+const info = document.getElementById("info");
+
 
 
 navigator.mediaDevices.getUserMedia({
 
     video:{
+
         facingMode:{
+
             ideal:"environment"
+
         }
+
     },
 
     audio:false
@@ -106,24 +154,33 @@ navigator.mediaDevices.getUserMedia({
 
 .then(stream=>{
 
+
     video.srcObject = stream;
 
-    document.getElementById("info").innerHTML =
+
+    info.innerHTML =
     "✅ Camera Working";
 
+
     console.log("Camera started");
+
 
 })
 
 
 .catch(error=>{
 
-    document.getElementById("info").innerHTML =
-    "❌ Camera Error: " + error;
+
+    info.innerHTML =
+    "❌ Camera Error: " + error.message;
+
 
     console.log(error);
 
+
 });
+
+
 
 
 
@@ -132,6 +189,7 @@ function goHome(){
     window.location.href = "home.html";
 
 }
+
 
 
 </script>
