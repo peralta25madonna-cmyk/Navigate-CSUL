@@ -29,11 +29,31 @@ video{
 
     object-fit:cover;
 
-    z-index:0;
+    z-index:1;
 }
 
 
-/* TEXT */
+/* TEST TEXT */
+.test{
+    position:fixed;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    color:red;
+
+    font-size:50px;
+
+    font-weight:bold;
+
+    z-index:999999;
+
+}
+
+
+/* STATUS */
 #info{
 
     position:fixed;
@@ -41,22 +61,22 @@ video{
     top:20px;
     left:20px;
 
-    background:red;
+    background:rgba(0,0,0,.7);
 
     color:white;
 
     padding:15px;
 
-    font-size:20px;
+    border-radius:10px;
 
-    z-index:99999;
+    font-size:18px;
+
+    z-index:999999;
 
 }
 
 
-
 /* BUTTON */
-
 .home-btn{
 
     position:fixed;
@@ -67,19 +87,27 @@ video{
 
     transform:translateX(-50%);
 
-    background:lime;
+
+    background:#00ff88;
 
     color:black;
 
-    padding:20px 40px;
+
+    padding:15px 35px;
+
 
     border:none;
 
-    border-radius:20px;
+    border-radius:30px;
+
 
     font-size:20px;
 
-    z-index:99999;
+    font-weight:bold;
+
+
+    z-index:999999;
+
 
 }
 
@@ -95,13 +123,18 @@ video{
 <video id="camera" autoplay playsinline></video>
 
 
+<div class="test">
+AR HTML TEST
+</div>
+
+
 <div id="info">
-TEST OVERLAY
+Starting Camera...
 </div>
 
 
 <button class="home-btn" onclick="goHome()">
-HOME
+🏠 HOME
 </button>
 
 
@@ -111,21 +144,34 @@ HOME
 
 const video = document.getElementById("camera");
 
+const info = document.getElementById("info");
+
+
 
 navigator.mediaDevices.getUserMedia({
 
-video:{
-    facingMode:"environment"
-},
+    video:{
+        facingMode:{
+            ideal:"environment"
+        }
+    },
 
-audio:false
+    audio:false
 
 })
 
 
 .then(stream=>{
 
-video.srcObject = stream;
+
+    video.srcObject = stream;
+
+
+    info.innerHTML =
+    "✅ Camera Working";
+
+
+    console.log("Camera started");
 
 
 })
@@ -133,8 +179,12 @@ video.srcObject = stream;
 
 .catch(error=>{
 
-document.getElementById("info").innerHTML =
-error;
+
+    info.innerHTML =
+    "❌ Camera Error: " + error.message;
+
+
+    console.log(error);
 
 
 });
@@ -143,7 +193,7 @@ error;
 
 function goHome(){
 
-window.location.href="home.html";
+    window.location.href="home.html";
 
 }
 
