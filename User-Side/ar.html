@@ -9,29 +9,31 @@
 
 <style>
 
-body{
+html,body{
     margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
     overflow:hidden;
-    background:black;
 }
 
 
 /* CAMERA */
 video{
-    position:absolute;
+    position:fixed;
     top:0;
     left:0;
 
-    width:100vw;
-    height:100vh;
+    width:100%;
+    height:100%;
 
     object-fit:cover;
 
-    z-index:1;
+    z-index:0;
 }
 
 
-/* STATUS */
+/* TEXT */
 #info{
 
     position:fixed;
@@ -39,23 +41,21 @@ video{
     top:20px;
     left:20px;
 
-    background:rgba(0,0,0,.6);
+    background:red;
 
     color:white;
 
     padding:15px;
 
-    border-radius:10px;
+    font-size:20px;
 
-    z-index:10;
-
-    font-family:Arial;
+    z-index:99999;
 
 }
 
 
 
-/* HOME BUTTON */
+/* BUTTON */
 
 .home-btn{
 
@@ -67,43 +67,24 @@ video{
 
     transform:translateX(-50%);
 
-
-    padding:15px 35px;
-
-
-    border:none;
-
-    border-radius:30px;
-
-
-    background:#00ff88;
+    background:lime;
 
     color:black;
 
+    padding:20px 40px;
 
-    font-size:18px;
+    border:none;
 
-    font-weight:bold;
+    border-radius:20px;
 
+    font-size:20px;
 
-    z-index:9999;
-
-
-    cursor:pointer;
-
-
-}
-
-
-.home-btn:active{
-
-    transform:translateX(-50%) scale(.95);
+    z-index:99999;
 
 }
 
 
 </style>
-
 
 </head>
 
@@ -111,17 +92,16 @@ video{
 <body>
 
 
-<div id="info">
-Starting Camera...
-</div>
-
-
 <video id="camera" autoplay playsinline></video>
 
 
+<div id="info">
+TEST OVERLAY
+</div>
+
 
 <button class="home-btn" onclick="goHome()">
-🏠 Home
+HOME
 </button>
 
 
@@ -131,38 +111,21 @@ Starting Camera...
 
 const video = document.getElementById("camera");
 
-const info = document.getElementById("info");
-
-
 
 navigator.mediaDevices.getUserMedia({
 
-    video:{
+video:{
+    facingMode:"environment"
+},
 
-        facingMode:{
-
-            ideal:"environment"
-
-        }
-
-    },
-
-    audio:false
+audio:false
 
 })
 
 
 .then(stream=>{
 
-
-    video.srcObject = stream;
-
-
-    info.innerHTML =
-    "✅ Camera Working";
-
-
-    console.log("Camera started");
+video.srcObject = stream;
 
 
 })
@@ -170,26 +133,19 @@ navigator.mediaDevices.getUserMedia({
 
 .catch(error=>{
 
-
-    info.innerHTML =
-    "❌ Camera Error: " + error.message;
-
-
-    console.log(error);
+document.getElementById("info").innerHTML =
+error;
 
 
 });
 
 
 
-
-
 function goHome(){
 
-    window.location.href = "home.html";
+window.location.href="home.html";
 
 }
-
 
 
 </script>
