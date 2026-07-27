@@ -1,167 +1,65 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
-
-
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-
 <title>AR Camera Test</title>
-
-
 
 <style>
 
-
-
 body{
-
     margin:0;
-
     overflow:hidden;
-
     background:black;
-
 }
-
-
 
 video{
-
     width:100vw;
-
     height:100vh;
-
     object-fit:cover;
-
 }
-
-
 
 #info{
-
     position:absolute;
-
     top:20px;
-
     left:20px;
-
     background:rgba(0,0,0,.6);
-
     color:white;
-
     padding:15px;
-
     border-radius:10px;
-
     z-index:10;
-
     font-family:Arial;
-
 }
-
-
-
+    
 </style>
-
-
-
 </head>
-
-
-
 <body>
 
-
-
-
-
-
-
 <video id="camera" autoplay playsinline></video>
-
-
-
-
-
 <script>
-
-
-
 const video = document.getElementById("camera");
-
-
-
-
-
 navigator.mediaDevices.getUserMedia({
-
-
-
     video:{
-
         facingMode:{
-
             ideal:"environment"
-
         }
-
     },
-
-
-
     audio:false
-
-
-
 })
-
-
 
 .then(stream=>{
     video.srcObject = stream;
 document.getElementById("info").innerHTML =
     "✅ Camera Working";
     console.log("Camera started");
-
-
-
 })
 
-
-
 .catch(error=>{
-
-
-
     document.getElementById("info").innerHTML =
-
     "❌ Camera Error: " + error;
-
-
-
     console.log(error);
-
-
-
 });
 
-
-
-
-
 </script>
-
-
-
-
-
 </body>
-
 </html>  
