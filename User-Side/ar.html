@@ -1,205 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>AR Camera Test</title>
 
 <style>
 
-html,body{
+body{
     margin:0;
-    padding:0;
-    width:100%;
-    height:100%;
     overflow:hidden;
+    background:black;
 }
 
-
-/* CAMERA */
 video{
-    position:fixed;
-    top:0;
-    left:0;
-
-    width:100%;
-    height:100%;
-
+    width:100vw;
+    height:100vh;
     object-fit:cover;
-
-    z-index:1;
 }
 
-
-/* TEST TEXT */
-.test{
-    position:fixed;
-
-    top:50%;
-    left:50%;
-
-    transform:translate(-50%,-50%);
-
-    color:red;
-
-    font-size:50px;
-
-    font-weight:bold;
-
-    z-index:999999;
-
-}
-
-
-/* STATUS */
 #info{
-
-    position:fixed;
-
+    position:absolute;
     top:20px;
     left:20px;
-
-    background:rgba(0,0,0,.7);
-
+    background:rgba(0,0,0,.6);
     color:white;
-
     padding:15px;
-
     border-radius:10px;
-
-    font-size:18px;
-
-    z-index:999999;
-
+    z-index:10;
+    font-family:Arial;
 }
-
-
-/* BUTTON */
-.home-btn{
-
-    position:fixed;
-
-    bottom:30px;
-
-    left:50%;
-
-    transform:translateX(-50%);
-
-
-    background:#00ff88;
-
-    color:black;
-
-
-    padding:15px 35px;
-
-
-    border:none;
-
-    border-radius:30px;
-
-
-    font-size:20px;
-
-    font-weight:bold;
-
-
-    z-index:999999;
-
-
-}
-
-
+    
 </style>
-
 </head>
-
-
 <body>
 
-
 <video id="camera" autoplay playsinline></video>
-
-
-<div class="test">
-AR HTML TEST
-</div>
-
-
-<div id="info">
-Starting Camera...
-</div>
-
-
-<button class="home-btn" onclick="goHome()">
-🏠 HOME
-</button>
-
-
-
 <script>
-
-
 const video = document.getElementById("camera");
-
-const info = document.getElementById("info");
-
-
-
 navigator.mediaDevices.getUserMedia({
-
     video:{
         facingMode:{
             ideal:"environment"
         }
     },
-
     audio:false
-
 })
-
 
 .then(stream=>{
-
-
     video.srcObject = stream;
-
-
-    info.innerHTML =
+document.getElementById("info").innerHTML =
     "✅ Camera Working";
-
-
     console.log("Camera started");
-
-
 })
 
-
 .catch(error=>{
-
-
-    info.innerHTML =
-    "❌ Camera Error: " + error.message;
-
-
+    document.getElementById("info").innerHTML =
+    "❌ Camera Error: " + error;
     console.log(error);
-
-
 });
 
-
-
-function goHome(){
-
-    window.location.href="home.html";
-
-}
-
-
 </script>
-
-
 </body>
-</html>
+</html>  lagyan mo nga ng button sa ibaba na pupunta sa home.html tignan natin kung may magppakita
