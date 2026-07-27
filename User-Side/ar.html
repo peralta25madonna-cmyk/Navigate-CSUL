@@ -125,19 +125,9 @@ navigator.mediaDevices.getUserMedia({
 
 
 .then(stream=>{
-
-
-
     video.srcObject = stream;
-
-
-
-    
-
-   
-
-
-
+document.getElementById("info").innerHTML =
+    "✅ Camera Working";
     console.log("Camera started");
 
 
