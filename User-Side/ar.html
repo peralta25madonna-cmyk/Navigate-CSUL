@@ -30,36 +30,112 @@ video{
     z-index:10;
     font-family:Arial;
 }
-    
+
+
+/* HOME BUTTON */
+
+.home-btn{
+
+    position:absolute;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%);
+
+    padding:15px 30px;
+
+    border:none;
+    border-radius:30px;
+
+    background:#00ff88;
+    color:black;
+
+    font-size:18px;
+    font-weight:bold;
+
+    z-index:10;
+    cursor:pointer;
+
+}
+
+
+.home-btn:hover{
+
+    background:#00cc6a;
+
+}
+
 </style>
+
 </head>
+
+
 <body>
 
+
+<div id="info">
+Starting Camera...
+</div>
+
+
 <video id="camera" autoplay playsinline></video>
+
+
+<button class="home-btn" onclick="goHome()">
+🏠 Home
+</button>
+
+
+
 <script>
+
 const video = document.getElementById("camera");
+
+
 navigator.mediaDevices.getUserMedia({
+
     video:{
         facingMode:{
             ideal:"environment"
         }
     },
+
     audio:false
+
 })
+
 
 .then(stream=>{
+
     video.srcObject = stream;
-document.getElementById("info").innerHTML =
+
+    document.getElementById("info").innerHTML =
     "✅ Camera Working";
+
     console.log("Camera started");
+
 })
 
+
 .catch(error=>{
+
     document.getElementById("info").innerHTML =
     "❌ Camera Error: " + error;
+
     console.log(error);
+
 });
 
+
+
+function goHome(){
+
+    window.location.href = "home.html";
+
+}
+
+
 </script>
+
+
 </body>
-</html>  
+</html>
