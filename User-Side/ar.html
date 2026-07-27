@@ -3,63 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AR Camera Test</title>
+
+<title>AR TEST</title>
 
 <style>
 
 body{
     margin:0;
-    overflow:hidden;
-    background:black;
-}
-
-video{
-    width:100vw;
+    background:green;
     height:100vh;
-    object-fit:cover;
-}
-
-#info{
-    position:absolute;
-    top:20px;
-    left:20px;
-    background:rgba(0,0,0,.6);
-    color:white;
-    padding:15px;
-    border-radius:10px;
-    z-index:10;
+    display:flex;
+    justify-content:center;
+    align-items:center;
     font-family:Arial;
 }
-    
+
+h1{
+    color:white;
+    font-size:40px;
+}
+
 </style>
+
 </head>
+
 <body>
 
-<video id="camera" autoplay playsinline></video>
-<script>
-const video = document.getElementById("camera");
-navigator.mediaDevices.getUserMedia({
-    video:{
-        facingMode:{
-            ideal:"environment"
-        }
-    },
-    audio:false
-})
+<h1>
+AR.HTML TEST SUCCESS
+</h1>
 
-.then(stream=>{
-    video.srcObject = stream;
-document.getElementById("info").innerHTML =
-    "✅ Camera Working";
-    console.log("Camera started");
-})
 
-.catch(error=>{
-    document.getElementById("info").innerHTML =
-    "❌ Camera Error: " + error;
-    console.log(error);
-});
-
-</script>
 </body>
-</html>  lagyan mo nga ng button sa ibaba na pupunta sa home.html tignan natin kung may magppakita
+</html>
